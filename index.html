@@ -54,7 +54,7 @@ body::after {
   cursor: grab;
   transition: all 0.3s ease;
 }
-.slider-container::-webkit-scrollbar { display:none; }
+slider-container::-webkit-scrollbar { display:none; }
 
 .slide {
   scroll-snap-align: start;
@@ -138,53 +138,71 @@ body::after {
 
 <div class="header">RUMAH GOZALI</div>
 
-<div class="slider-container" id="sliderContainer">
-  <div class="slide" id="slide0"></div>
-  <div class="slide" id="slide1"></div>
-</div>
+<div class="slider-container" id="sliderContainer"></div>
 
 <script>
-const slide0Channels = [
-  { name: "TNT Sports 1", url: "https://embed.crichd.tech/embed.php?id=TNTSports1%255BUK%255D" },
-  { name: "TNT Sports 2", url: "https://embed.crichd.tech/embed.php?id=TNTSports2%255BUK%255D" },
-  { name: "TNT Sports 3", url: "https://embed.crichd.tech/embed.php?id=TNTSports3%255BUK%255D" },
-  { name: "Fox Sports 1", url: "https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D" },
-  { name: "Ziggo Sport", url: "https://embed.crichd.tech/embed.php?id=ZiggoSport%255BNetherlands%255D" }
+// CHANNEL PER GRUP
+const channelGroups = [
+  {
+    name:"TNT Sports",
+    channels:[
+      { name:"TNT Sports 1", url:"https://embed.crichd.tech/embed.php?id=TNTSports1%255BUK%255D" },
+      { name:"TNT Sports 2", url:"https://embed.crichd.tech/embed.php?id=TNTSports2%255BUK%255D" },
+      { name:"TNT Sports 3", url:"https://embed.crichd.tech/embed.php?id=TNTSports3%255BUK%255D" },
+      { name:"TNT Sports 4", url:"https://embed.crichd.tech/embed.php?id=TNTSports4%255BUK%255D" },
+      { name:"TNT Sports 5", url:"https://embed.crichd.tech/embed.php?id=TNTSports5%255BUK%255D" },
+      { name:"TNT Sports 6", url:"https://embed.crichd.tech/embed.php?id=TNTSports6%255BUK%255D" },
+      { name:"TNT Sports 7", url:"https://embed.crichd.tech/embed.php?id=TNTSports7%255BUK%255D" },
+      { name:"TNT Sports 8", url:"https://embed.crichd.tech/embed.php?id=TNTSports8%255BUK%255D" }
+    ]
+  },
+  {
+    name:"Fox Sports",
+    channels:[
+      { name:"Fox Sports 1", url:"https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D" },
+      { name:"Fox Sports 2", url:"https://embed.crichd.tech/embed.php?id=FOXSports2%255BUSA%255D" }
+    ]
+  },
+  {
+    name:"Ziggo Sport",
+    channels:[
+      { name:"Ziggo Sport 1", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport%255BNetherlands%255D" },
+      { name:"Ziggo Sport 2", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport2%255BNetherlands%255D" },
+      { name:"Ziggo Sport 3", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport3%255BNetherlands%255D" },
+      { name:"Ziggo Sport 4", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport4%255BNetherlands%255D" }
+    ]
+  }
 ];
 
-const slide1Channels = [
-  { name: "Channel Favorit 1", url: "https://embed.crichd.tech/embed.php?id=TNTSports1%255BUK%255D" },
-  { name: "Channel Favorit 2", url: "https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D" },
-  { name: "Channel Favorit 3", url: "https://embed.crichd.tech/embed.php?id=ZiggoSport%255BNetherlands%255D" },
-  { name: "Channel Favorit 4", url: "https://embed.crichd.tech/embed.php?id=TNTSports2%255BUK%255D" },
-  { name: "Channel Favorit 5", url: "https://embed.crichd.tech/embed.php?id=TNTSports3%255BUK%255D" }
-];
+// CREATE SLIDES
+const sliderContainer = document.getElementById("sliderContainer");
+channelGroups.forEach((group, idx)=>{
+  const slide = document.createElement("div");
+  slide.className = "slide";
+  slide.id = `slide${idx}`;
 
-function createChannelCards(slideId, channels){
-  const container = document.getElementById(slideId);
-  channels.forEach((ch,i)=>{
-    container.innerHTML += `
+  group.channels.forEach((ch,i)=>{
+    slide.innerHTML += `
       <div class="card">
         <div class="card-header">
           <h2>${ch.name}</h2>
-          <button class="refresh-btn" onclick="refreshFrame('${slideId}-${i}')">⟳</button>
+          <button class="refresh-btn" onclick="refreshFrame('${slide.id}-${i}')">⟳</button>
         </div>
         <div class="player">
-          <iframe id="${slideId}-${i}" data-src="${ch.url}" allowfullscreen></iframe>
-          <div class="overlay" onclick="playStream('${slideId}-${i}', this)">
+          <iframe id="${slide.id}-${i}" data-src="${ch.url}" allowfullscreen></iframe>
+          <div class="overlay" onclick="playStream('${slide.id}-${i}', this)">
             <div class="play-btn">▶ Play</div>
           </div>
-          <div class="spinner" id="spinner-${slideId}-${i}"></div>
+          <div class="spinner" id="spinner-${slide.id}-${i}"></div>
         </div>
       </div>
     `;
   });
-}
 
-createChannelCards("slide0", slide0Channels);
-createChannelCards("slide1", slide1Channels);
+  sliderContainer.appendChild(slide);
+});
 
-/* PLAY & REFRESH */
+// PLAY & REFRESH
 function playStream(id, overlay){
   const frame = document.getElementById(id);
   const spinner = document.getElementById("spinner-" + id);
@@ -203,7 +221,7 @@ function refreshFrame(id){
   frame.onload = ()=>{ spinner.style.display = "none"; }
 }
 
-/* DESKTOP DRAG SWIPE */
+// SLIDE DRAG SWIPE
 let isDown = false, startX, scrollLeft;
 const slider = document.getElementById("sliderContainer");
 slider.addEventListener('mousedown', e=>{
@@ -222,7 +240,7 @@ slider.addEventListener('mousemove', e=>{
   slider.scrollLeft = scrollLeft + walk;
 });
 
-/* SNAP TO SLIDE + ANIMASI FANCY */
+// SNAP TO SLIDE PER GRUP
 function snapSlide(){
   const slideWidth = slider.offsetWidth;
   const slides = document.querySelectorAll('.slide');
@@ -239,4 +257,4 @@ document.querySelectorAll('.slide')[0].classList.add('active');
 </script>
 
 </body>
-  </html>
+</html>
