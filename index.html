@@ -3,163 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOZALI STREAM</title>
+
+<title>Rumah Gozali</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-body {
-    background-color: #0d0d0d;
-    color: #e0e0e0;
-    font-family: Arial;
-    text-align: center;
+* {
+    box-sizing: border-box;
     margin: 0;
-    padding: 20px;
+    padding: 0;
 }
 
-h1 {
-    color: #00ffcc;
-    margin-bottom: 30px;
+/* BODY */
+body {
+    font-family: 'Inter', sans-serif;
+    background: #000;
+    color: #fff;
+    padding: 15px;
+}
+
+/* HEADER */
+.header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #e50914;
+    letter-spacing: 1px;
+}
+
+/* GRID */
+.container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
 }
 
 /* CARD */
 .card {
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 15px;
-    margin: 20px auto;
-    max-width: 900px;
-    overflow: hidden;
+    background: #111;
+    border-radius: 10px;
+    padding: 10px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* PLAYER FIX (ANTI KELUAR FRAME) */
+/* HOVER DESKTOP */
+@media (hover: hover) {
+    .card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+    }
+}
+
+/* TAP HP */
+.card:active {
+    transform: scale(0.97);
+}
+
+/* HEADER CARD */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* TITLE */
+.card h2 {
+    font-size: 0.85rem;
+    color: #bbb;
+}
+
+/* REFRESH */
+.refresh-btn {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* PLAYER */
 .player {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
+    border-radius: 8px;
     overflow: hidden;
-    border-radius: 10px;
     background: black;
+    margin-top: 6px;
 }
 
+/* IFRAME */
 .player iframe {
-    position: absolute;
-    inset: 0;
     width: 100%;
     height: 100%;
     border: 0;
 }
 
-/* OVERLAY PLAY */
+/* OVERLAY */
 .overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.75);
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    transition: 0.3s;
 }
 
+.overlay:hover {
+    background: rgba(0,0,0,0.5);
+}
+
+/* PLAY BUTTON */
 .play-btn {
-    background: #00ffcc;
-    color: black;
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-weight: bold;
+    background: #e50914;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: 0.2s;
 }
 
-/* BUTTON */
-button {
-    margin-top: 10px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+/* HOVER PLAY */
+@media (hover: hover) {
+    .play-btn:hover {
+        transform: scale(1.1);
+        background: #ff1a1a;
+    }
 }
 
-.refresh-btn {
-    background: #00d1ff;
+/* TAP PLAY */
+.play-btn:active {
+    transform: scale(0.95);
+}
+
+/* DESKTOP GRID */
+@media (min-width: 768px) {
+    .container {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<h1>GOZALI STREAM</h1>
+<div class="header">Rumah Gozali</div>
 
-<div id="stream-container"></div>
+<div class="container" id="channels"></div>
 
-<!-- DATA CHANNEL -->
 <script>
 const channels = [
-  {
-    name: "TNT Sports 1",
-    url: "https://embed.crichd.tech/embed.php?id=TNTSports1%255BUK%255D"
-  },
-  {
-    name: "TNT Sports 2",
-    url: "https://embed.crichd.tech/embed.php?id=TNTSports2%255BUK%255D"
-  },
-  {
-    name: "TNT Sports 3",
-    url: "https://embed.crichd.tech/embed.php?id=TNTSports3%255BUK%255D"
-  },
-  {
-    name: "Fox Sports 1",
-    url: "https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D"
-  },
-  {
-    name: "DAZN Netherlands",
-    url: "https://embed.crichd.tech/embed.php?id=ZiggoSport%255BNetherlands%255D"
-  }
+    { name: "TNT Sports 1", url: "https://embed.crichd.tech/embed.php?id=TNTSports1%255BUK%255D" },
+    { name: "TNT Sports 2", url: "https://embed.crichd.tech/embed.php?id=TNTSports2%255BUK%255D" },
+    { name: "TNT Sports 3", url: "https://embed.crichd.tech/embed.php?id=TNTSports3%255BUK%255D" },
+    { name: "Fox Sports 1", url: "https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D" },
+    { name: "Ziggo Sport", url: "https://embed.crichd.tech/embed.php?id=ZiggoSport%255BNetherlands%255D" }
 ];
-</script>
 
-<!-- GENERATE -->
-<script>
-const container = document.getElementById("stream-container");
+const container = document.getElementById("channels");
 
 channels.forEach((ch, i) => {
-  container.innerHTML += `
-    <div class="card">
-      <h2>LIVE ${i+1} - ${ch.name}</h2>
+    container.innerHTML += `
+        <div class="card">
+            <div class="card-header">
+                <h2>${ch.name}</h2>
+                <button class="refresh-btn" onclick="refreshFrame(${i})">⟳</button>
+            </div>
 
-      <div class="player" data-src="">
-        <iframe loading="lazy" referrerpolicy="no-referrer"></iframe>
+            <div class="player">
+                <iframe id="frame-${i}" data-src="${ch.url}" allowfullscreen></iframe>
 
-        <div class="overlay" onclick="playStream(this, '${ch.url}')">
-          <div class="play-btn">▶ PLAY</div>
+                <div class="overlay" id="overlay-${i}" onclick="playStream(${i})">
+                    <div class="play-btn">▶ Play</div>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <button class="refresh-btn" onclick="refreshStream(this)">🔄 Refresh</button>
-    </div>
-  `;
+    `;
 });
-</script>
 
-<!-- SCRIPT -->
-<script>
-function playStream(btn, url) {
-    let player = btn.parentElement;
-    let iframe = player.querySelector("iframe");
+function playStream(index) {
+    const frame = document.getElementById(`frame-${index}`);
+    const overlay = document.getElementById(`overlay-${index}`);
 
-    iframe.src = url;
-    player.setAttribute("data-src", url);
-
-    btn.style.display = "none";
+    frame.src = frame.dataset.src;
+    overlay.style.display = "none";
 }
 
-function refreshStream(btn) {
-    let player = btn.parentElement.querySelector(".player");
-    let iframe = player.querySelector("iframe");
-    let url = player.getAttribute("data-src");
-
-    if (!url) {
-        alert("Klik PLAY dulu!");
-        return;
+function refreshFrame(index) {
+    const frame = document.getElementById(`frame-${index}`);
+    if (frame.src) {
+        frame.src = frame.src;
     }
-
-    iframe.src = url;
 }
 </script>
 
