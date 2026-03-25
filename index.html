@@ -4,12 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RUMAH GOZALI</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <style>
 * { box-sizing: border-box; margin:0; padding:0; }
-body { font-family: 'Inter', sans-serif; background:#000; color:#fff; overflow-x:hidden; }
-.header { font-size:1.3rem; font-weight:700; margin-bottom:20px; color:#e50914; letter-spacing:1px; text-align:center; text-transform:uppercase; }
+body { font-family: 'Inter', sans-serif; background:#0d0d0d; color:#fff; overflow-x:hidden; }
+
+/* BACKGROUND NETFLIX VIBES */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:linear-gradient(135deg, #0d0d0d, #1a1a1a);
+  z-index:-2;
+}
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.02), transparent 70%);
+  z-index:-1;
+}
+
+/* HEADER NETFLIX VIBES */
+.header {
+  font-family: 'Bebas Neue', 'Inter', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #E50914;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px #E50914, 0 0 20px rgba(229,9,20,0.5);
+  margin-bottom: 20px;
+  animation: slideDown 0.8s ease-out;
+}
+@keyframes slideDown {
+  0% { transform: translateY(-30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
 
 /* SLIDER */
 .slider-container {
@@ -18,6 +51,8 @@ body { font-family: 'Inter', sans-serif; background:#000; color:#fff; overflow-x
   -webkit-overflow-scrolling: touch;
   display: flex;
   width: 100%;
+  cursor: grab;
+  transition: all 0.3s ease;
 }
 .slider-container::-webkit-scrollbar { display:none; }
 
@@ -28,27 +63,74 @@ body { font-family: 'Inter', sans-serif; background:#000; color:#fff; overflow-x
   display: grid;
   grid-template-columns: 1fr;
   gap:15px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 @media(min-width:768px){ .slide { grid-template-columns: 1fr 1fr; } }
 
 /* CARD */
-.card { background:#111; border-radius:10px; padding:10px; transition: transform 0.25s ease, box-shadow 0.25s ease; }
-@media(hover:hover){ .card:hover { transform:scale(1.03); box-shadow:0 10px 25px rgba(0,0,0,0.8); } }
+.card {
+  background:#111;
+  border-radius:10px;
+  padding:10px;
+  transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.3s ease;
+  position:relative;
+  overflow:hidden;
+}
+@media(hover:hover){ 
+  .card:hover { transform:scale(1.06); box-shadow:0 15px 35px rgba(0,0,0,0.85); } 
+}
 .card:active { transform:scale(0.97); }
 .card-header { display:flex; justify-content:space-between; align-items:center; }
-.card h2 { font-size:0.85rem; color:#bbb; }
-.refresh-btn { background:transparent; border:none; color:#aaa; font-size:0.9rem; cursor:pointer; }
+.card h2 { font-family:'Bebas Neue', sans-serif; font-size:0.9rem; color:#ddd; transition: color 0.3s; }
+.refresh-btn { background:transparent; border:none; color:#aaa; font-size:0.9rem; cursor:pointer; transition: all 0.3s ease; }
+.refresh-btn:hover { color:#E50914; transform: translateX(3px); }
 
 /* PLAYER */
-.player { position:relative; width:100%; aspect-ratio:16/9; border-radius:8px; overflow:hidden; background:black; margin-top:6px; }
-.player iframe { width:100%; height:100%; border:0; }
+.player { position:relative; width:100%; aspect-ratio:16/9; border-radius:8px; overflow:hidden; background:black; margin-top:6px; transition: all 0.3s ease; }
+.player iframe { width:100%; height:100%; border:0; display:block; }
 
 /* OVERLAY PLAY */
-.overlay { position:absolute; inset:0; background:rgba(0,0,0,0.75); display:flex; justify-content:center; align-items:center; cursor:pointer; transition:0.3s; }
-.overlay:hover { background:rgba(0,0,0,0.5); }
-.play-btn { background:#e50914; padding:10px 20px; border-radius:6px; font-weight:500; font-size:0.85rem; transition:0.2s; }
-@media(hover:hover){ .play-btn:hover{ transform:scale(1.1); background:#ff1a1a; } }
-.play-btn:active{ transform:scale(0.95); }
+.overlay { position:absolute; inset:0; background:rgba(0,0,0,0.75); display:flex; justify-content:center; align-items:center; cursor:pointer; transition: all 0.4s ease; z-index:3; opacity:1; }
+.overlay:hover { background:rgba(0,0,0,0.6); }
+.play-btn {
+  background:#E50914;
+  padding:10px 22px;
+  border-radius:6px;
+  font-weight:600;
+  font-size:0.9rem;
+  transition: transform 0.3s ease, background 0.3s ease;
+  animation: bounce 1s ease infinite alternate;
+}
+@keyframes bounce { 0%{ transform:scale(1); } 100%{ transform:scale(1.08); } }
+@media(hover:hover){ .play-btn:hover { transform: scale(1.2); background:#ff1a1a; } }
+.play-btn:active { transform:scale(0.95); }
+
+/* LOADING SPINNER */
+.spinner {
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,0.6);
+  border-radius:8px;
+  z-index:2;
+  display:none;
+}
+.spinner:after {
+  content:"";
+  width:30px;
+  height:30px;
+  border:4px solid #fff;
+  border-top-color:#E50914;
+  border-radius:50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* SLIDE TRANSITION EFFECT */
+.slide.active { transform: scale(1); opacity:1; }
+.slide.inactive { transform: scale(0.97); opacity:0.4; }
 </style>
 </head>
 
@@ -57,10 +139,7 @@ body { font-family: 'Inter', sans-serif; background:#000; color:#fff; overflow-x
 <div class="header">RUMAH GOZALI</div>
 
 <div class="slider-container" id="sliderContainer">
-  <!-- SLIDE 1: 5 CHANNEL UTAMA -->
   <div class="slide" id="slide0"></div>
-
-  <!-- SLIDE 2: 5 CHANNEL FAVORIT -->
   <div class="slide" id="slide1"></div>
 </div>
 
@@ -95,6 +174,7 @@ function createChannelCards(slideId, channels){
           <div class="overlay" onclick="playStream('${slideId}-${i}', this)">
             <div class="play-btn">▶ Play</div>
           </div>
+          <div class="spinner" id="spinner-${slideId}-${i}"></div>
         </div>
       </div>
     `;
@@ -104,17 +184,59 @@ function createChannelCards(slideId, channels){
 createChannelCards("slide0", slide0Channels);
 createChannelCards("slide1", slide1Channels);
 
+/* PLAY & REFRESH */
 function playStream(id, overlay){
   const frame = document.getElementById(id);
+  const spinner = document.getElementById("spinner-" + id);
+  spinner.style.display = "flex";
   frame.src = frame.dataset.src;
-  overlay.style.display = "none";
+  frame.onload = ()=>{ spinner.style.display = "none"; }
+  overlay.style.opacity = 0;
+  setTimeout(()=> overlay.style.display="none", 300);
 }
 
 function refreshFrame(id){
   const frame = document.getElementById(id);
-  if(frame.src){ frame.src = frame.src; }
+  const spinner = document.getElementById("spinner-" + id);
+  spinner.style.display = "flex";
+  frame.src = frame.src;
+  frame.onload = ()=>{ spinner.style.display = "none"; }
 }
+
+/* DESKTOP DRAG SWIPE */
+let isDown = false, startX, scrollLeft;
+const slider = document.getElementById("sliderContainer");
+slider.addEventListener('mousedown', e=>{
+  isDown = true;
+  slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+});
+slider.addEventListener('mouseleave', ()=>{ isDown=false; slider.classList.remove('active'); });
+slider.addEventListener('mouseup', ()=>{ isDown=false; slider.classList.remove('active'); snapSlide(); });
+slider.addEventListener('mousemove', e=>{
+  if(!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (startX - x);
+  slider.scrollLeft = scrollLeft + walk;
+});
+
+/* SNAP TO SLIDE + ANIMASI FANCY */
+function snapSlide(){
+  const slideWidth = slider.offsetWidth;
+  const slides = document.querySelectorAll('.slide');
+  const current = Math.round(slider.scrollLeft / slideWidth);
+  slides.forEach((s,i)=> {
+    if(i===current){ s.classList.add('active'); s.classList.remove('inactive'); }
+    else{ s.classList.add('inactive'); s.classList.remove('active'); }
+  });
+  slider.scrollTo({ left: current*slideWidth, behavior:'smooth' });
+}
+
+// Init first slide as active
+document.querySelectorAll('.slide')[0].classList.add('active');
 </script>
 
 </body>
-</html>
+  </html>
