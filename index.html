@@ -7,76 +7,137 @@
 
 <style>
 body {
-    background: #0d0d0d;
+    background-color: #0d0d0d;
     color: #e0e0e0;
-    font-family: sans-serif;
-    padding: 15px;
+    font-family: Arial;
     text-align: center;
+    margin: 0;
+    padding: 20px;
 }
 
+h1 {
+    color: #00ffcc;
+    margin-bottom: 30px;
+}
+
+/* CARD */
 .card {
     background: #1a1a1a;
-    padding: 10px;
-    margin-bottom: 20px;
     border-radius: 12px;
+    padding: 15px;
+    margin: 20px auto;
+    max-width: 900px;
+    overflow: hidden;
 }
 
+/* PLAYER FIX (ANTI KELUAR FRAME) */
 .player {
     position: relative;
     width: 100%;
-    padding-bottom: 70%;
-    background: black;
-    border-radius: 8px;
+    aspect-ratio: 16 / 9;
     overflow: hidden;
+    border-radius: 10px;
+    background: black;
 }
 
 .player iframe {
     position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     border: 0;
-    top: 0;
-    left: 0;
 }
 
-/* overlay */
+/* OVERLAY PLAY */
 .overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0,0,0,0.7);
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    z-index: 2;
 }
 
-/* tombol */
 .play-btn {
     background: #00ffcc;
-    padding: 12px 20px;
-    border-radius: 50px;
     color: black;
+    padding: 12px 20px;
+    border-radius: 10px;
     font-weight: bold;
 }
 
-.refresh-btn {
+/* BUTTON */
+button {
     margin-top: 10px;
-    background: #00d1ff;
+    padding: 8px 12px;
     border: none;
-    padding: 8px 15px;
     border-radius: 8px;
     cursor: pointer;
 }
 
-@media(max-width:600px){
-    .player { padding-bottom: 75%; }
+.refresh-btn {
+    background: #00d1ff;
 }
 </style>
+</head>
 
+<body>
+
+<h1>GOZALI STREAM</h1>
+
+<div id="stream-container"></div>
+
+<!-- DATA CHANNEL -->
+<script>
+const channels = [
+  {
+    name: "TNT Sports 1",
+    url: "https://embed.crichd.tech/embed.php?id=TNTSports1%255BUK%255D"
+  },
+  {
+    name: "TNT Sports 2",
+    url: "https://embed.crichd.tech/embed.php?id=TNTSports2%255BUK%255D"
+  },
+  {
+    name: "TNT Sports 3",
+    url: "https://embed.crichd.tech/embed.php?id=TNTSports3%255BUK%255D"
+  },
+  {
+    name: "Fox Sports 1",
+    url: "https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D"
+  },
+  {
+    name: "DAZN Netherlands",
+    url: "https://embed.crichd.tech/embed.php?id=ZiggoSport%255BNetherlands%255D"
+  }
+];
+</script>
+
+<!-- GENERATE -->
+<script>
+const container = document.getElementById("stream-container");
+
+channels.forEach((ch, i) => {
+  container.innerHTML += `
+    <div class="card">
+      <h2>LIVE ${i+1} - ${ch.name}</h2>
+
+      <div class="player" data-src="">
+        <iframe loading="lazy" referrerpolicy="no-referrer"></iframe>
+
+        <div class="overlay" onclick="playStream(this, '${ch.url}')">
+          <div class="play-btn">▶ PLAY</div>
+        </div>
+      </div>
+
+      <button class="refresh-btn" onclick="refreshStream(this)">🔄 Refresh</button>
+    </div>
+  `;
+});
+</script>
+
+<!-- SCRIPT -->
 <script>
 function playStream(btn, url) {
     let player = btn.parentElement;
@@ -85,7 +146,7 @@ function playStream(btn, url) {
     iframe.src = url;
     player.setAttribute("data-src", url);
 
-    btn.style.display = "none"; // hilangkan overlay
+    btn.style.display = "none";
 }
 
 function refreshStream(btn) {
@@ -98,71 +159,9 @@ function refreshStream(btn) {
         return;
     }
 
-    iframe.src = url; // reload iframe
+    iframe.src = url;
 }
 </script>
 
-</head>
-
-<body>
-
-<h1>GOZALI STREAM</h1>
-
-<!-- LIVE TEMPLATE -->
-<div class="card">
-    <h3>LIVE 1 - TNT Sports 1</h3>
-    <div class="player" data-src="">
-        <iframe></iframe>
-        <div class="overlay" onclick="playStream(this, 'https://embed.crichd.tech/embed.php?id=TNTSports1%255BUK%255D')">
-            <div class="play-btn">▶ PLAY</div>
-        </div>
-    </div>
-    <button class="refresh-btn" onclick="refreshStream(this)">🔄 Refresh</button>
-</div>
-
-<div class="card">
-    <h3>LIVE 2 - TNT Sports 2</h3>
-    <div class="player" data-src="">
-        <iframe></iframe>
-        <div class="overlay" onclick="playStream(this, 'https://embed.crichd.tech/embed.php?id=TNTSports2%255BUK%255D')">
-            <div class="play-btn">▶ PLAY</div>
-        </div>
-    </div>
-    <button class="refresh-btn" onclick="refreshStream(this)">🔄 Refresh</button>
-</div>
-
-<div class="card">
-    <h3>LIVE 3 - TNT Sports 3</h3>
-    <div class="player" data-src="">
-        <iframe></iframe>
-        <div class="overlay" onclick="playStream(this, 'https://embed.crichd.tech/embed.php?id=TNTSports3%255BUK%255D')">
-            <div class="play-btn">▶ PLAY</div>
-        </div>
-    </div>
-    <button class="refresh-btn" onclick="refreshStream(this)">🔄 Refresh</button>
-</div>
-
-<div class="card">
-    <h3>LIVE 4 - Fox Sports 1</h3>
-    <div class="player" data-src="">
-        <iframe></iframe>
-        <div class="overlay" onclick="playStream(this, 'https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D')">
-            <div class="play-btn">▶ PLAY</div>
-        </div>
-    </div>
-    <button class="refresh-btn" onclick="refreshStream(this)">🔄 Refresh</button>
-</div>
-
-<div class="card">
-    <h3>LIVE 5 - Ziggo Sport</h3>
-    <div class="player" data-src="">
-        <iframe></iframe>
-        <div class="overlay" onclick="playStream(this, 'https://embed.crichd.tech/embed.php?id=ZiggoSport%255BNetherlands%255D')">
-            <div class="play-btn">▶ PLAY</div>
-        </div>
-    </div>
-    <button class="refresh-btn" onclick="refreshStream(this)">🔄 Refresh</button>
-</div>
-
 </body>
-                    </html>
+</html>
