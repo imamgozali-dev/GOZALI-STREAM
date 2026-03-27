@@ -1,221 +1,54 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RUMAH GOZALI</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+const API = "https://gozali-proxy.gozaliimam0804.workers.dev?url=";
+const slider = document.getElementById("slider");
 
-<style>
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:'Inter',sans-serif; background:#0d0d0d; color:#fff; overflow-x:hidden; }
+async function loadLive(){
 
-.header {
-  font-family:'Bebas Neue';
-  font-size:2rem;
-  color:#E50914;
-  text-align:center;
-  margin:20px 0;
-}
+  slider.innerHTML = "Loading live...";
 
-/* SLIDER */
-.slider-container {
-  display:flex;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-}
-.slider-container::-webkit-scrollbar { display:none; }
+  try{
+    const res = await fetch(API + "https://viewembed.ru/api/events");
+    const data = await res.json();
 
-.slide {
-  flex:0 0 100%;
-  scroll-snap-align:start;
-  padding:15px;
-  display:grid;
-  gap:15px;
-}
-@media(min-width:768px){
-  .slide { grid-template-columns:1fr 1fr; }
-}
+    console.log(data); // debug
 
-/* CARD */
-.card {
-  background:#111;
-  border-radius:10px;
-  padding:10px;
-}
-.card-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.card h2 {
-  font-family:'Bebas Neue';
-  font-size:0.9rem;
-}
+    // fleksibel (karena struktur API suka beda)
+    const events = data.events || data.data || data || [];
 
-/* PLAYER FIX (ANTI KEPOTONG) */
-.player {
-  position:relative;
-  width:100%;
-  padding-top:56.25%; /* 16:9 */
-  background:black;
-  overflow:hidden;
-  border-radius:8px;
-}
+    const slide = document.createElement("div");
+    slide.className = "slide";
 
-.player iframe {
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  border:0;
-}
+    if(!events || events.length === 0){
+      slide.innerHTML = "<h2>Tidak ada live saat ini</h2>";
+    }
 
-/* OVERLAY */
-.overlay {
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.7);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-  z-index:2;
-}
-.play-btn {
-  background:#E50914;
-  padding:10px 20px;
-  border-radius:5px;
-}
+    events.slice(0,5).forEach((ev,i)=>{
 
-/* SPINNER */
-.spinner {
-  position:absolute;
-  inset:0;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:3;
-}
-.spinner:after {
-  content:"";
-  width:30px;
-  height:30px;
-  border:4px solid #fff;
-  border-top-color:red;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-}
-@keyframes spin { to { transform:rotate(360deg); } }
-</style>
-</head>
+      slide.innerHTML += `
+      <div class="card">
+        <div class="live-badge">LIVE</div>
 
-<body>
+        <h3>${ev.title || ev.name || "Live Event"}</h3>
 
-<div class="header">RUMAH GOZALI</div>
-<div class="slider-container" id="sliderContainer"></div>
-
-<script>
-
-// DATA CHANNEL
-const channelGroups = [
-  {
-    name:"🔥 Live Event",
-    channels:[
-      { name:"MOTOGP", url:"https://dlstreams.top/stream/stream-149.php" },
-      { name:"MOTO GP 2", url:"https://dlstreams.top/stream/stream-103.php" },
-      { name:"Live Slot 3", url:"" },
-      { name:"Live Slot 4", url:"" },
-      { name:"Live Slot 5", url:"" }
-    ]
-  },
-  {
-    name:"TNT Sports",
-    channels:[
-      { name:"TNT 1", url:"https://embed.crichd.tech/embed.php?id=TNTSports1%255BUK%255D" },
-      { name:"TNT 2", url:"https://embed.crichd.tech/embed.php?id=TNTSports2%255BUK%255D" },
-      { name:"TNT 3", url:"https://embed.crichd.tech/embed.php?id=TNTSports3%255BUK%255D" },
-      { name:"TNT 4", url:"https://embed.crichd.tech/embed.php?id=TNTSports4%255BUK%255D" },
-      { name:"TNT 5", url:"https://embed.crichd.tech/embed.php?id=TNTSports5%255BUK%255D" },
-      { name:"TNT 6", url:"https://embed.crichd.tech/embed.php?id=TNTSports6%255BUK%255D" },
-      { name:"TNT 7", url:"https://embed.crichd.tech/embed.php?id=TNTSports7%255BUK%255D" },
-      { name:"TNT 8", url:"https://embed.crichd.tech/embed.php?id=TNTSports8%255BUK%255D" }
-    ]
-  },
-  {
-    name:"Fox Sports",
-    channels:[
-      { name:"Fox 1", url:"https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D" },
-      { name:"Fox 2", url:"https://embed.crichd.tech/embed.php?id=FOXSports2%255BUSA%255D" }
-    ]
-  },
-  {
-    name:"Ziggo Sport",
-    channels:[
-      { name:"Ziggo 1", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport%255BNetherlands%255D" },
-      { name:"Ziggo 2", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport2%255BNetherlands%255D" },
-      { name:"Ziggo 3", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport3%255BNetherlands%255D" },
-      { name:"Ziggo 4", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport4%255BNetherlands%255D" }
-    ]
-  }
-];
-
-// RENDER
-const container = document.getElementById("sliderContainer");
-
-channelGroups.forEach((group,idx)=>{
-  const slide=document.createElement("div");
-  slide.className="slide";
-
-  group.channels.forEach((ch,i)=>{
-    slide.innerHTML+=`
-    <div class="card">
-      <div class="card-header">
-        <h2>${ch.name}</h2>
-        <button onclick="refreshFrame('${idx}-${i}')">⟳</button>
-      </div>
-
-      <div class="player">
-        <iframe id="${idx}-${i}" data-src="${ch.url}" allowfullscreen></iframe>
-
-        <div class="overlay" onclick="playStream('${idx}-${i}',this)">
-          <div class="play-btn">▶ Play</div>
+        <div class="player">
+          <iframe 
+            src="${ev.embed || ev.stream || ""}" 
+            allow="autoplay; fullscreen">
+          </iframe>
         </div>
+      </div>`;
+    });
 
-        <div class="spinner" id="sp-${idx}-${i}"></div>
-      </div>
-    </div>`;
-  });
+    slider.innerHTML = "";
+    slider.appendChild(slide);
 
-  container.appendChild(slide);
-});
-
-// PLAY
-function playStream(id,overlay){
-  const frame=document.getElementById(id);
-  const spin=document.getElementById("sp-"+id);
-  const url=frame.dataset.src;
-
-  if(!url){
-    alert("⚠️ Stream belum tersedia");
-    return;
+  }catch(err){
+    console.log(err);
+    slider.innerHTML = "<h2>❌ Gagal load API</h2>";
   }
-
-  spin.style.display="flex";
-  frame.src=url;
-  frame.onload=()=>spin.style.display="none";
-
-  overlay.style.display="none";
 }
 
-// REFRESH
-function refreshFrame(id){
-  const f=document.getElementById(id);
-  if(!f.src) return;
-  f.src=f.src;
-}
-</script>
+// 🔁 refresh otomatis
+setInterval(loadLive, 30000);
 
-</body>
-</html>
+// 🚀 load pertama
+loadLive();
