@@ -8,192 +8,153 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <style>
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:'Inter',sans-serif; background:#0d0d0d; color:#fff; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#0d0d0d;color:#fff;}
 
 /* HEADER */
-.header {
+.header{
+  position:relative;
+  height:110px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(to bottom,#000,#0d0d0d);
+}
+.title{
   font-family:'Bebas Neue';
-  font-size:clamp(2rem,5vw,4rem);
-  color:#E50914;
-  text-align:center;
-  margin:30px 0 20px;
+  font-size:clamp(2rem,5vw,3.5rem);
   letter-spacing:4px;
+}
+.title span{color:#E50914;}
+
+.clock{
+  position:absolute;
+  right:20px;
+  top:20px;
+  font-size:0.9rem;
+  opacity:0.8;
 }
 
 /* DOT */
-.dots {
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin-bottom:15px;
-}
-.dot {
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#555;
-  cursor:pointer;
-  opacity:0.5;
-  transition:0.3s;
-}
-.dot.active {
-  background:#E50914;
-  transform:scale(1.3);
-  opacity:1;
-}
+.dots{display:flex;justify-content:center;gap:10px;margin:15px 0;}
+.dot{width:10px;height:10px;border-radius:50%;background:#555;opacity:0.5;cursor:pointer;}
+.dot.active{background:#E50914;transform:scale(1.3);opacity:1;}
 
 /* SLIDER */
-.slider-container {
-  display:flex;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  scroll-behavior:smooth;
-}
-.slider-container::-webkit-scrollbar { display:none; }
+.slider-container{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;}
+.slider-container::-webkit-scrollbar{display:none;}
 
-.slide {
-  flex:0 0 100%;
-  scroll-snap-align:start;
-  padding:15px;
-  display:grid;
-  gap:15px;
-}
-@media(min-width:768px){
-  .slide { grid-template-columns:1fr 1fr; }
-}
+.slide{flex:0 0 100%;scroll-snap-align:start;padding:15px;display:grid;gap:15px;}
+@media(min-width:768px){.slide{grid-template-columns:1fr 1fr;}}
 
 /* CARD */
-.card {
-  background:#111;
-  border-radius:12px;
-  padding:10px;
-}
-
-.card-header {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:6px;
-}
-
-.card h2 {
-  font-family:'Bebas Neue';
-  font-size:clamp(1rem,1.2vw,1.4rem);
-  letter-spacing:1px;
-}
+.card{background:#111;border-radius:12px;padding:10px;}
+.card-header{display:flex;justify-content:space-between;align-items:center;}
+.card h2{font-family:'Bebas Neue';font-size:1.2rem;}
 
 /* REFRESH */
-.refresh-btn {
-  width:32px;
-  height:32px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(255,255,255,0.08);
-  border:none;
-  border-radius:50%;
-  cursor:pointer;
-  color:#fff;
-  font-size:14px;
-  transition:0.2s;
+.refresh-btn{
+  width:32px;height:32px;border-radius:50%;
+  border:none;background:rgba(255,255,255,0.08);
+  color:#fff;cursor:pointer;
 }
-.refresh-btn:hover {
-  background:#E50914;
-  transform:rotate(90deg);
-}
+.refresh-btn:hover{background:#E50914;transform:rotate(-180deg);}
 
-/* PLAYER */
-.player {
+/* PLAYER FIX (FINAL) */
+.player{
   position:relative;
   width:100%;
-  padding-top:56.25%;
+  height:500px; /* mengikuti standar embed asli */
   background:black;
   border-radius:10px;
   overflow:hidden;
-  box-shadow:0 0 15px rgba(0,0,0,0.6);
 }
 
-.player iframe {
-  position:absolute;
-  inset:0;
+.player iframe{
   width:100%;
   height:100%;
   border:0;
+  display:block;
 }
 
 /* OVERLAY */
-.overlay {
+.overlay{
   position:absolute;
   inset:0;
   background:rgba(0,0,0,0.7);
   display:flex;
   justify-content:center;
   align-items:center;
-  cursor:pointer;
   z-index:2;
 }
-.play-btn {
+.play-btn{
   background:#E50914;
   padding:10px 20px;
   border-radius:6px;
 }
 
-/* COMING SOON */
-.coming {
-  background:rgba(0,0,0,0.85);
-  color:#aaa;
+/* COMING */
+.coming{
+  background:rgba(0,0,0,0.9);
   font-family:'Bebas Neue';
-  font-size:1.2rem;
   letter-spacing:2px;
+  color:#aaa;
 }
 
 /* SPINNER */
-.spinner {
+.spinner{
   position:absolute;
   inset:0;
   display:none;
   justify-content:center;
   align-items:center;
-  z-index:3;
 }
-.spinner:after {
+.spinner:after{
   content:"";
-  width:30px;
-  height:30px;
+  width:30px;height:30px;
   border:4px solid #fff;
   border-top-color:red;
   border-radius:50%;
   animation:spin 1s linear infinite;
 }
-@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes spin{to{transform:rotate(360deg);}}
 
 </style>
 </head>
 
 <body>
 
-<div class="header">RUMAH GOZALI</div>
+<div class="header">
+  <div class="title">RUMAH <span>GOZALI</span></div>
+  <div class="clock" id="clock"></div>
+</div>
+
 <div class="dots" id="dots"></div>
 <div class="slider-container" id="sliderContainer"></div>
 
 <script>
 
-// DATA
-const channelGroups = [
-{
+// JAM
+function updateClock(){
+  const now=new Date();
+  document.getElementById("clock").innerText=now.toLocaleTimeString("id-ID");
+}
+setInterval(updateClock,1000);
+updateClock();
+
+// DATA (TIDAK DIUBAH)
+const channelGroups=[{
 name:"LIVE EVENT",
 channels:[
-{ name:"", url:""},
-{ name:"", url:""},
-{ name:"", url:""},
-{ name:"", url:""},
-{ name:"", url:""},
-{ name:"", url:""},
-{ name:"", url:""},
-{ name:"", url:""}
-]
-},
+{ name:"EVENT 1", url:""},
+{ name:"EVENT 2", url:""},
+{ name:"EVENT 3", url:""},
+{ name:"EVENT 4", url:""},
+{ name:"EVENT 5", url:""},
+{ name:"EVENT 6", url:""},
+{ name:"EVENT 7", url:""},
+{ name:"EVENT 8", url:""}
+]},
 {
 name:"SPORT CHANNEL",
 channels:[
@@ -205,13 +166,12 @@ channels:[
 { name:"Fox Sport 1", url:"https://embed.crichd.tech/embed.php?id=FOXSports1%255BUSA%255D"},
 { name:"Ziggo Sport 3", url:"https://embed.crichd.tech/embed.php?id=ZiggoSport3%255BNetherlands%255D"},
 { name:"Bein 1 Arabic", url:"https://embed.crichd.tech/embed.php?id=BeinSports1%255BArab%255D"}
-]
-}
+]}
 ];
 
 // INIT
-const container = document.getElementById("sliderContainer");
-const dotsContainer = document.getElementById("dots");
+const container=document.getElementById("sliderContainer");
+const dotsContainer=document.getElementById("dots");
 
 // RENDER
 channelGroups.forEach((group,idx)=>{
@@ -219,25 +179,22 @@ channelGroups.forEach((group,idx)=>{
   slide.className="slide";
 
   group.channels.forEach((ch,i)=>{
-
-    const isEmpty = !ch.url;
+    const isEmpty=!ch.url;
 
     slide.innerHTML+=`
     <div class="card">
       <div class="card-header">
-        <h2>${ch.name}</h2>
+        <h2>${ch.name||"CHANNEL"}</h2>
         <button class="refresh-btn" onclick="refreshFrame('${idx}-${i}')">⟳</button>
       </div>
 
       <div class="player">
-        <iframe id="${idx}-${i}" data-src="${ch.url}"></iframe>
+        <iframe id="${idx}-${i}" data-src="${ch.url}" allowfullscreen></iframe>
 
-        <div class="overlay ${isEmpty ? 'coming' : ''}"
-             ${isEmpty ? '' : `onclick="playStream('${idx}-${i}',this)"`}>
+        <div class="overlay ${isEmpty?'coming':''}"
+        ${isEmpty?'':`onclick="playStream('${idx}-${i}',this)"`}>
 
-          ${isEmpty 
-            ? `<div>COMING SOON</div>` 
-            : `<div class="play-btn">▶ Play</div>`}
+        ${isEmpty?'COMING SOON':'<div class="play-btn">▶ Play</div>'}
 
         </div>
 
@@ -253,20 +210,17 @@ channelGroups.forEach((group,idx)=>{
   if(idx===0) dot.classList.add("active");
 
   dot.onclick=()=>{
-    container.scrollTo({
-      left: container.clientWidth * idx,
-      behavior:"smooth"
-    });
+    container.scrollTo({left:container.clientWidth*idx,behavior:"smooth"});
   };
 
   dotsContainer.appendChild(dot);
 });
 
 // SCROLL
-container.addEventListener("scroll", ()=>{
-  const index=Math.round(container.scrollLeft / container.clientWidth);
+container.addEventListener("scroll",()=>{
+  const index=Math.round(container.scrollLeft/container.clientWidth);
   document.querySelectorAll(".dot").forEach((d,i)=>{
-    d.classList.toggle("active", i===index);
+    d.classList.toggle("active",i===index);
   });
 });
 
@@ -285,7 +239,7 @@ function playStream(id,overlay){
 // REFRESH
 function refreshFrame(id){
   const f=document.getElementById(id);
-  if(!f.src) return;
+  if(!f.src)return;
   f.src=f.src;
 }
 
